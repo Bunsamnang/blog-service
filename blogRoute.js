@@ -1,6 +1,7 @@
 import express from "express";
 import {
   adminDeleteBlog,
+  adminGetAllUsers,
   adminViewAllBlogs,
   adminViewUserBlogs,
   createBlog,
@@ -23,5 +24,6 @@ router.delete("/user/delete-blog/:id", extractUserFromHeader, deleteBlog);
 router.get("/admin/blogs", verifyAdmin, adminViewAllBlogs);
 router.get("/admin/blogs/:userId", verifyAdmin, adminViewUserBlogs);
 router.delete("/admin/blogs/:id", verifyAdmin, adminDeleteBlog);
+router.get("admin/users", verifyAdmin, adminGetAllUsers);
 
 export default router;
