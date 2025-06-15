@@ -297,3 +297,18 @@ export const adminDeleteBlog = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const adminGetAllUsers = async (req, res) => {
+  try {
+    const response = await userAPI.get("/"); // <-- Directly calling auth
+    const users = response.data.users;
+
+    res.status(200).json({
+      message: "Fetched users successfully",
+      users,
+    });
+  } catch (err) {
+    console.error("Blog-service failed to get users from auth:", err.message);
+    res.status(500).json({ message: "Failed to fetch users" });
+  }
+};
