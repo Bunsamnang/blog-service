@@ -260,13 +260,34 @@ export const adminViewUserBlogs = async (req, res) => {
       return res.status(400).json({ message: "Invalid user ID" });
     }
 
+    // Fetch user info once (since all blogs are from same user)
+    let user = null;
+    try {
+      const userRes = await userAPI.get(`/${userId}`);
+      user = userRes.data;
+    } catch (err) {
+      console.error(`Failed to fetch author info for user ${userId}:`, err.message);
+    }
+
     const blogs = await blogModel
       .find({ author: userId })
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const enrichedBlogs = blogs.map((blog) => ({
+      ...blog,
+      authorInfo: user
+        ? {
+            id: blog.author,
+            username: user.username,
+            email: user.email,
+          }
+        : null,
+    }));
 
     res.status(200).json({
       message: `Retrieved blogs for user ${userId}`,
-      blogs,
+      blogs: enrichedBlogs,
     });
   } catch (err) {
     console.error("Admin error fetching user blogs:", err);
