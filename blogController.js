@@ -266,7 +266,10 @@ export const adminViewUserBlogs = async (req, res) => {
       const userRes = await userAPI.get(`/${userId}`);
       user = userRes.data;
     } catch (err) {
-      console.error(`Failed to fetch author info for user ${userId}:`, err.message);
+      console.error(
+        `Failed to fetch author info for user ${userId}:`,
+        err.message
+      );
     }
 
     const blogs = await blogModel
@@ -321,7 +324,11 @@ export const adminDeleteBlog = async (req, res) => {
 
 export const adminGetAllUsers = async (req, res) => {
   try {
-    const response = await userAPI.get("/"); // <-- Directly calling auth
+    const response = await userAPI.get("/", {
+      headers: {
+        "x-user-role": req.headers["x-user-role"],
+      },
+    }); // <-- Directly calling auth
     const users = response.data.users;
 
     res.status(200).json({
